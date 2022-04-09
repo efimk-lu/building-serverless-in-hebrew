@@ -11,6 +11,26 @@ Globals:
     Timeout: 3
 
 Resources:
+  AddSubscriberFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: add_subscriber/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName:
+              !Ref SubscribersTable
+      
+      Events:
+        Subscribers:
+          Type: Api 
+          Properties:
+            Path: /{group}/subscribers
+            Method: post
+            
   GetSubscribersFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -25,7 +45,7 @@ Resources:
               !Ref SubscribersTable
       
       Events:
-        HelloWorld:
+        Subscribers:
           Type: Api 
           Properties:
             Path: /{group}/subscribers

@@ -1,25 +1,21 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
+from utils.consts import SUBSCRIBERS_TABLE
+from utils.api_gw_helpers import require_group, lambda_response
 
 
 # Cache client
 dynamodb = boto3.resource("dynamodb")
-SUBSCRIBERS_TABLE = "subscribers"
+table = dynamodb.Table(SUBSCRIBERS_TABLE)
+
+@require_group
 def lambda_handler(event, context):
     # Get group name
-    group = event.get("pathParameters", {}).get("group")
-    if group:
-        table = dynamodb.Table(SUBSCRIBERS_TABLE)
-        response = table.query(
-            KeyConditionExpression=Key('group_name').eq(group)
-        )
-        return {
-            "statusCode": 200,
-            "body": json.dumps(response['Items']),
-        }
-    else:
-        return {
-            "statusCode": 500,
-            "body": "Missing group!",
-        }
+    group = event["group_name"]
+    
+    response = table.query(
+        KeyConditionExpression=Key('group_name').eq(group)
+    )
+    return lambda_response(response['Items'])
+   

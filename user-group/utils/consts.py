@@ -1,0 +1,1 @@
+SUBSCRIBERS_TABLE = "subscribers"
