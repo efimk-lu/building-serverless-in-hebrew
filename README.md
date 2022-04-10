@@ -30,7 +30,7 @@
 5. Add `boto3==1.21.37` to `requirements.txt`
 6. Paste 
 ```
-mport json
+import json
 import boto3
 from boto3.dynamodb.conditions import Key
 
