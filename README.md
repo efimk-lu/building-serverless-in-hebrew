@@ -117,4 +117,5 @@ Outputs:
 ```
 into `template.yaml`
 
-8. Build and deploy `sam build && sam deploy`
+8. Build and deploy `sam build`
+9. `sam deploy --guided`. Use `user-groups` as stack name
