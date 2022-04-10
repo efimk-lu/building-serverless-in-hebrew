@@ -26,7 +26,7 @@
 1. Clone `git@github.com:efimk-lu/building-serverless-in-hebrew.git`
 2. Checkout the `base` tag , e.g. `git checkout tags/base` 
 3. You should see a basic structure of our SAM aplication for managing user groups.
-4. Rename folder `add_subscriber  --> `get-subscribers`
+4. Rename folder `add_subscriber`  --> `get-subscribers`
 5. Add `boto3==1.21.37` to `requirements.txt`
 6. Paste 
 ```
