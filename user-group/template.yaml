@@ -10,7 +10,36 @@ Globals:
   Function:
     Timeout: 3
 
+Parameters:
+  ScheduledMessagesBucketName:
+    Type: String
+
 Resources:
+  ScheduleFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: schedule_message/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName:
+              !Ref ScheduledMessagesTable
+        - S3WritePolicy:
+            BucketName:
+              !Ref ScheduledMessagesBucket
+              
+      Environment:
+        Variables:
+          SCHEDULED_MESSAGES_BUCKET_NAME: !Ref ScheduledMessagesBucket
+      Events:
+        Subscribers:
+          Type: Api 
+          Properties:
+            Path: /{group}/schedule
+            Method: post
   AddSubscriberFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -51,6 +80,10 @@ Resources:
             Path: /{group}/subscribers
             Method: get
   
+  ScheduledMessagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ScheduledMessagesBucketName}"
   SubscribersTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -70,7 +103,30 @@ Resources:
           AttributeName: "subscriber"
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
+  ScheduledMessagesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "scheduled_messages"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "group_name"
+          AttributeType: "S"
+        - 
+          AttributeName: "scheduled_date"
+          AttributeType: "N"
+      KeySchema: 
+        - 
+          AttributeName: "group_name"
+          KeyType: "HASH"
+        - 
+          AttributeName: "scheduled_date"
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
 Outputs:
-  HelloWorldApi:
+  SubscribersList:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{group}/subscribers"
+    
+  ScheduleMessage:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{group}/schedule"
