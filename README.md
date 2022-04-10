@@ -22,4 +22,96 @@
 
 **Wait for the instructor to go over the directory structure of a SAM application.**
 
-## Step 1
+## Step 1 - Implement get-subscribers
+1. Clone `git@github.com:efimk-lu/building-serverless-in-hebrew.git`
+2. Checkout the `base` tag , e.g. `git checkout tags/base` 
+3. You should see a basic structure of our SAM aplication for managing user groups.
+4. Rename folder `add_subscriber  --> `get-subscribers`
+5. Add `boto3==1.21.37` to `requirements.txt`
+6. Paste 
+```
+mport json
+import boto3
+from boto3.dynamodb.conditions import Key
+
+
+# Cache client
+dynamodb = boto3.resource("dynamodb")
+SUBSCRIBERS_TABLE = "subscribers"
+def lambda_handler(event, context):
+    # Get group name
+    group = event.get("pathParameters", {}).get("group")
+    if group:
+        table = dynamodb.Table(SUBSCRIBERS_TABLE)
+        response = table.query(
+            KeyConditionExpression=Key('group_name').eq(group)
+        )
+        return {
+            "statusCode": 200,
+            "body": json.dumps(response['Items']),
+        }
+    else:
+        return {
+            "statusCode": 500,
+            "body": "Missing group!",
+        }
+```
+into `app.py`
+7. Paste
+```
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  user-group
+  User group functionality
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  GetSubscribersFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: get_subscribers/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName:
+              !Ref SubscribersTable
+      
+      Events:
+        HelloWorld:
+          Type: Api 
+          Properties:
+            Path: /{group}/subscribers
+            Method: get
+  
+  SubscribersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "subscribers"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "group_name"
+          AttributeType: "S"
+        - 
+          AttributeName: "subscriber"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "group_name"
+          KeyType: "HASH"
+        - 
+          AttributeName: "subscriber"
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+Outputs:
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{group}/subscribers"
+```
+into `template.yaml`
