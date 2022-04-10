@@ -3,7 +3,7 @@
 ## Prepare your machine
 1. Install AWS SAM. Follow https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 2. Verify it works as expected, run `sam --version` yiu should be getting something like `> SAM CLI, version 1.33.0`. Pay attention that the version might change
-3. Let's initialize an Hello World for SAM example.
+3. Let's initialize an Hello World for SAM example. If it works, then your machine is ready.
 ### Hello SAM
 1. `sam init`
 2. Choose `AWS Quick Start Templates`
@@ -21,3 +21,5 @@
 14. Give the deployment a try, you should see under `Outputs` the `API Gateway endpoint URL`, copy the URL and try it on browser.
 
 **Wait for the instructor to go over the directory structure of a SAM application.**
+
+## Step 1
