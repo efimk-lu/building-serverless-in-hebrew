@@ -17,3 +17,7 @@
 10. When asked `Confirm changes before deploy` choose `y`
 11. When asked `HelloWorldFunction may not have authorization defined, Is this okay?` choose `y`
 12. The rest can be defaults
+13. `Deploy this changeset?` choose `y`
+14. Give the deployment a try, you should see under `Outputs` the `API Gateway endpoint URL`, copy the URL and try it on browser.
+
+**Wait for the instructor to go over the directory structure of a SAM application.**
