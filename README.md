@@ -115,3 +115,4 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{group}/subscribers"
 ```
 into `template.yaml`
+8. Build and deploy `sam build && sam deploy`
