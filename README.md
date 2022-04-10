@@ -57,6 +57,7 @@ def lambda_handler(event, context):
         }
 ```
 into `app.py`
+
 7. Paste
 ```
 AWSTemplateFormatVersion: '2010-09-09'
@@ -115,4 +116,5 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{group}/subscribers"
 ```
 into `template.yaml`
+
 8. Build and deploy `sam build && sam deploy`
