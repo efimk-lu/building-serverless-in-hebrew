@@ -85,7 +85,7 @@ Resources:
               !Ref SubscribersTable
       
       Events:
-        HelloWorld:
+        Subscribers:
           Type: Api 
           Properties:
             Path: /{group}/subscribers
@@ -119,3 +119,150 @@ into `template.yaml`
 
 8. Build and deploy `sam build`
 9. `sam deploy --guided`. Use `user-groups` as stack name
+
+## Step 2 - Implement add-subscriber
+1. Duplicate `get_subscribers` and rename the new folder `add_subscriber`
+2. Paste
+```
+import json
+import boto3
+from datetime import datetime
+
+from utils.consts import SUBSCRIBERS_TABLE
+from utils.api_gw_helpers import require_group, lambda_response
+
+# Cache client
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(SUBSCRIBERS_TABLE)
+
+@require_group
+def lambda_handler(event, context):
+    # Get group name
+    group = event["group_name"]
+    email = json.loads(event.get("body", {})).get("email")
+    if email:
+        response = table.put_item(
+           Item={
+                "group_name": group,
+                "subscriber": email,
+                "date_joined": int(datetime.now().timestamp() * 1000)
+            }
+        )
+
+        return lambda_response({"message":f"{email} added successfully"})
+
+    return lambda_response({"err":"Email not found"}, status_code=500)
+```
+into `app.py`
+3. Create a `utils` python package
+4. Paste 
+```
+import json 
+from typing import Callable, Any, Optional, List, Dict, Union
+
+def lambda_response(
+    content: Any,
+    status_code: int = 200,
+    content_type: str = "application/json",
+) -> dict:
+    """
+    Returns a dictionary that adheres to the required format that is needed by AWS api gw ->> Lambda proxy integration.
+    See https://aws.amazon.com/premiumsupport/knowledge-center/malformed-502-api-gateway/ for more details
+    :param content: The actual content that needs to return
+    :param status_code: The status code of the response. In case of an exception, you can use a more specialized method
+    :param content_type: The Content-Type header value of the response.
+    :param should_gzip: Should the content be compressed.
+    """
+
+    try:
+        body_message = (
+            json.dumps(content, default=str) if content_type == "application/json" else content
+        )
+    except Exception as err:
+        print(f"Invalid lambda response. {err}")
+
+        status_code = 500
+        body_message = "Err"
+    response = {
+        "statusCode": str(status_code),
+        "body": body_message,
+        "headers": {
+            "Content-Type": content_type,
+        },
+    }
+
+    return response
+
+
+def require_group(function):
+    def wrapper(*args, **kwargs):
+        event = args[0]
+        if type(event).__name__ != "dict":
+            return function(*args, **kwargs)
+
+        group = event.get("pathParameters", {}).get("group")
+        if group:
+            event["group_name"] = group
+            return function(*args, **kwargs)
+        else:
+            return {
+                "statusCode": 500,
+                "body": "Missing group!",
+            }
+
+    return wrapper
+```
+into `user-group/utils/api_gw_helpers.py`
+
+5. Paste `SUBSCRIBERS_TABLE = "subscribers"` into `user-group/utils/consts.py`
+6. Add
+```
+AddSubscriberFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: add_subscriber/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName:
+              !Ref SubscribersTable
+
+      Events:
+        Subscribers:
+          Type: Api 
+          Properties:
+            Path: /{group}/subscribers
+            Method: post
+```
+to `user-group/template.yaml` under `Resources`
+
+7. Simplify `user-group/get_subscribers/app.py`
+```
+import json
+import boto3
+from boto3.dynamodb.conditions import Key
+from utils.consts import SUBSCRIBERS_TABLE
+from utils.api_gw_helpers import require_group, lambda_response
+
+
+# Cache client
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(SUBSCRIBERS_TABLE)
+
+@require_group
+def lambda_handler(event, context):
+    # Get group name
+    group = event["group_name"]
+    
+    response = table.query(
+        KeyConditionExpression=Key('group_name').eq(group)
+    )
+    return lambda_response(response['Items'])
+```
+8. Link `utils` in each one of the functions. 
+`cd get_subscribers && ln -s ../utils`
+and
+`cd add_subscriber && ln -s ../utils`
