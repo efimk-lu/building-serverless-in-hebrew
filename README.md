@@ -567,6 +567,10 @@ into `user-group/utils/models.py`
 
 9. Add
 ```
+import logging
+
+# previous stuff
+
 SOURCE_EMAIL = os.environ.get("SOURCE_EMAIL")
 
 logger = logging.getLogger()
