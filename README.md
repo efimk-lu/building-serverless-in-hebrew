@@ -154,6 +154,7 @@ def lambda_handler(event, context):
     return lambda_response({"err":"Email not found"}, status_code=500)
 ```
 into `app.py`
+
 3. Create a `utils` python package
 4. Paste 
 ```
