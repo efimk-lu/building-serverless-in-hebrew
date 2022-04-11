@@ -1,4 +1,4 @@
-# Building Serverless application in Hebrew workshop
+# Building a Serverless application in Hebrew - the workshop
 
 - [Welcome](#welcome)
 - [Prepare your machine](#prepare-your-machine)
