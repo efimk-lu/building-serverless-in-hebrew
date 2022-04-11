@@ -1,5 +1,6 @@
-# Building Serverless application in Hebrew
+# Building Serverless application in Hebrew workshop
 
+- [Welcome](#welcome)
 - [Prepare your machine](#prepare-your-machine)
   * [Hello SAM](#hello-sam)
 - [Step 1 - Implement get-subscribers](#step-1---implement-get-subscribers)
@@ -10,6 +11,14 @@
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
  
+## Welcome
+Ever wanted to create your own group manager a la Serverless style, now is your chance. In this workshop you'll build a group manager with the ability to:
+* Create new groups
+* Allow external participants to join these groups
+* Schedule sending a message via email to the subscribers.
+![workshop](https://user-images.githubusercontent.com/43570637/162735759-7a6dd10b-c1da-4250-bf4c-ddccd53766f7.png)
+
+
 ## Prepare your machine
 1. Install AWS SAM. Follow https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 2. Verify it works as expected, run `sam --version` yiu should be getting something like `> SAM CLI, version 1.33.0`. Pay attention that the version might change
