@@ -26,7 +26,7 @@ Resources:
       Architectures:
         - x86_64
       Policies:
-        - DynamoDBCrudPolicy:
+        - DynamoDBCrudPolicy: 
             TableName:
               !Ref ScheduledMessagesTable
         - DynamoDBReadPolicy:
