@@ -1,5 +1,14 @@
 # Building Serverless application in Hebrew
 
+- [Building Serverless application in Hebrew](#building-serverless-application-in-hebrew)
+  * [Prepare your machine](#prepare-your-machine)
+    + [Hello SAM](#hello-sam)
+  * [Step 1 - Implement get-subscribers](#step-1---implement-get-subscribers)
+  * [Step 2 - Implement add-subscriber](#step-2---implement-add-subscriber)
+  * [Step 3 - Schedule a message](#step-3---schedule-a-message)
+  * [Step 4 - Send a message](#step-4---send-a-message)
+  * [Testing](#testing)
+ 
 ## Prepare your machine
 1. Install AWS SAM. Follow https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 2. Verify it works as expected, run `sam --version` yiu should be getting something like `> SAM CLI, version 1.33.0`. Pay attention that the version might change
