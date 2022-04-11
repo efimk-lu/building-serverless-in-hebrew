@@ -667,7 +667,7 @@ SendScheduledMessagesFunction:
       Architectures:
         - x86_64
       Policies:
-        - DynamoDBReadPolicy:
+        - DynamoDBCrudPolicy:
             TableName:
               !Ref ScheduledMessagesTable
         - DynamoDBReadPolicy:
@@ -726,3 +726,29 @@ ScheduledMessagesTable:
 14. Next you need to verify your email (the one you defined at step #13) under the SES service. Follow https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html#verify-email-addresses-procedure
 15. You are ready to test it
 
+## Testing
+1. Let's make sure your email is subscribed to the `serverless` group.
+```
+curl -X POST https://<api-id>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers -H 'Content-Type: application/json' -d '{"email":"efi@lumigo.io"}'
+
+curl https://<ap-id>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers
+```
+2. Let's schedule a message for this hour. For the timestamp use https://www.epochconverter.com/
+```
+curl -X POST https://<api-id>.execute-api.us-east-1.amazonaws.com/Prod/serverless/schedule -H 'Content-Type: application/json' -d '{"subject":"Hello SLS workshop!", "body":"The workshop is not recorded.<h1>Welcome dear friends</h1>", "schedule_on":<epoch including milliseconds>}'
+```
+3. We can wait for the `SendScheduledMessagesFunction` Lambda to be triggered, but let's try to run it manually.
+4. Go the AWS Lambda console, click on the `Test` tab, choose the default values and click on `Save.
+<img width="1618" alt="image" src="https://user-images.githubusercontent.com/43570637/162713355-e8fc83a0-a406-43d0-8618-75ea67c658ef.png">
+5. You should be getting a permission error
+<img width="1624" alt="image" src="https://user-images.githubusercontent.com/43570637/162713582-464565ab-4080-4954-85be-c15a9e346931.png">
+6. Let's add the missing permission. Add
+```
+SESCrudPolicy:
+    IdentityName:
+        !Ref SourceEmail
+```
+Under policies for the `SendScheduledMessagesFunction` Lambda
+7. Redeploy (build & deploy)
+8. A successful message was sent to your subscribers
+<img width="1534" alt="image" src="https://user-images.githubusercontent.com/43570637/162719901-b1e78145-3050-44d4-bcfa-95b8deec3fc7.png">
