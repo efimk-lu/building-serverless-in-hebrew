@@ -714,11 +714,9 @@ ScheduledMessagesTable:
           AttributeType: "S"
       KeySchema: 
         - 
-          AttributeName: "group_name"
           AttributeName: "scheduled_date"
           KeyType: "HASH"
         - 
-          AttributeName: "scheduled_date"
           AttributeName: "group_name"
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
