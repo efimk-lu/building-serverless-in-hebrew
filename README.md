@@ -267,3 +267,4 @@ def lambda_handler(event, context):
 `cd get_subscribers && ln -s ../utils`
 and
 `cd add_subscriber && ln -s ../utils`
+9. `sam build && sam deploy`
