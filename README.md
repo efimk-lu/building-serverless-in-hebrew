@@ -268,3 +268,8 @@ def lambda_handler(event, context):
 and
 `cd add_subscriber && ln -s ../utils`
 9. `sam build && sam deploy`
+10. Test it using curl
+```
+curl -X POST https://<replace>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers -H 'Content-Type: application/json' -d '{"email":"efi@lumigo.io"}'
+curl https://<replace>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers
+```
