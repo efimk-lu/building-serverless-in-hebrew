@@ -270,6 +270,7 @@ and
 9. `sam build && sam deploy`
 10. Test it using curl
 ```
-curl -X POST https://<replace>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers -H 'Content-Type: application/json' -d '{"email":"efi@lumigo.io"}'
-curl https://<replace>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers
+curl -X POST https://<api-id>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers -H 'Content-Type: application/json' -d '{"email":"efi@lumigo.io"}'
+curl https://<api-d>.execute-api.us-east-1.amazonaws.com/Prod/serverless/subscribers
 ```
+Replace **api-id** with the relevent code you can copy from the output 
