@@ -742,6 +742,7 @@ curl -X POST https://<api-id>.execute-api.us-east-1.amazonaws.com/Prod/serverles
 <img width="1618" alt="image" src="https://user-images.githubusercontent.com/43570637/162713355-e8fc83a0-a406-43d0-8618-75ea67c658ef.png">
 5. You should be getting a permission error
 <img width="1624" alt="image" src="https://user-images.githubusercontent.com/43570637/162713582-464565ab-4080-4954-85be-c15a9e346931.png">
+
 6. Let's add the missing permission. Add
 ```
 SESCrudPolicy:
@@ -749,6 +750,7 @@ SESCrudPolicy:
         !Ref SourceEmail
 ```
 Under policies for the `SendScheduledMessagesFunction` Lambda
+
 7. Redeploy (build & deploy)
 8. A successful message was sent to your subscribers
 <img width="1534" alt="image" src="https://user-images.githubusercontent.com/43570637/162719901-b1e78145-3050-44d4-bcfa-95b8deec3fc7.png">
