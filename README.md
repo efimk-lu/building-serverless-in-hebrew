@@ -722,7 +722,7 @@ ScheduledMessagesTable:
       BillingMode: PAY_PER_REQUEST
 ```
 
-13. Let's deploy it `sam build --guided && sam deploy`. Make sure to define `SourceEmail` parameter to your email
+13. Let's deploy it `sam build && sam deploy --guided`. Make sure to define `SourceEmail` parameter to your email
 14. Next you need to verify your email (the one you defined at step #13) under the SES service. Follow https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html#verify-email-addresses-procedure
 15. You are ready to test it
 
